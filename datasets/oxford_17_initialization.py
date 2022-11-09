@@ -4,8 +4,9 @@
 # 我们应当支持 Dataset 自主命名
 
 import numpy as np
-import os
-import shutil
+import os, shutil
+
+
 if (os.path.exists(path + "/Dataset")): 
     shutil.rmtree(path + "/Dataset", ignore_errors=True)
 
