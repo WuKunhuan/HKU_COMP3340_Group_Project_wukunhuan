@@ -13,7 +13,7 @@ print(f"Path: {path}")
 print("")
 
 file_output = open("setup.txt", "w")
-print(f"Path: {path}")
+file_output.write(f"Path: {path}")
 file_output.close()
 
 # Import Pytorch
@@ -42,4 +42,3 @@ except FileNotFoundError:
     raise Exception(f"[Error] import torchvision failed. Run \"conda install torchvision\" in a terminal under {path}, then run the setup again. ")
 print("[Package] import torchvision succeed. ")
 
-# Import essential models
