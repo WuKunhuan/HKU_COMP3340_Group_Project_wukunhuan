@@ -9,8 +9,14 @@ if (os.name == 'nt'):
 # Setting the environment path
 path = subprocess.check_output("pwd")
 path = path[0:len(path)-1]
-print(f"[Path] {path}")
+print(f"Path: {path}")
 print("")
+
+file_input = open("setup.txt", "r")
+file_output = open("setup_output.txt", "w")
+print(f"Path: {path}")
+file_input.close()
+file_output.close()
 
 # Import Pytorch
 try:
