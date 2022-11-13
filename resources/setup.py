@@ -19,7 +19,7 @@ class setup:
         except ImportError:
             os.system("clear")
             raise Exception(f"[Error] import pytorch failed. Run \"conda install pytorch\" in a terminal under {path}, then run the setup again. ")
-        print("[Package] import pytorch succeed. ")
+        print ("[Package] import pytorch succeeded. ")
 
         # Import numpy
         try:
@@ -27,7 +27,7 @@ class setup:
         except ImportError:
             os.system("clear")
             raise Exception(f"[Error] import numpy failed. Run \"conda install numpy\" in a terminal under {path}, then run the setup again. ")
-        print("[Package] import numpy succeed. ")
+        print ("[Package] import numpy succeeded. ")
 
         # Import torchvision
         try:
@@ -36,7 +36,9 @@ class setup:
         except FileNotFoundError:
             os.system("clear")
             raise Exception(f"[Error] import torchvision failed. Run \"conda install torchvision\" in a terminal under {path}, then run the setup again. ")
-        print("[Package] import torchvision succeed. ")
+        print ("[Package] import torchvision succeeded. ")
+        print ("")
+        print ("COMP3340_GP setup finished. ")
         
         
 
