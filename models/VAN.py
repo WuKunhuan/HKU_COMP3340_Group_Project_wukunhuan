@@ -1,3 +1,5 @@
+# source https://github.com/Visual-Attention-Network/VAN-Classification/blob/main/models/van.py
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
