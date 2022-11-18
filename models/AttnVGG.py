@@ -56,7 +56,7 @@ class AttnVGG(nn.Module):
         else:
             c1, c2, c3 = None, None, None
             x = self.classify(torch.squeeze(g))
-        return [x, c1, c2, c3]
+        return x
 
     def _make_layer(self, in_features, out_features, blocks, pool=False):
         layers = []
