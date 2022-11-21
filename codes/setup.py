@@ -1,5 +1,5 @@
 
-import os, sys, subprocess
+import os, shutil, sys, subprocess
 
 class setup:
     
@@ -37,7 +37,19 @@ class setup:
             os.system("clear")
             raise Exception(f"[Error] import torchvision failed. Run \"conda install torchvision\" in a terminal under {path}, then run the setup again. ")
         print ("[Package] import torchvision succeeded. ")
+        
+        if (os.path.exists(self.path + "/figures")): shutil.rmtree(self.path + "/figures", ignore_errors=True)
+        os.makedirs(self.path + "/figures", exist_ok = True)
+        print ("[Folder] Created the figures folder. ")
+        if (os.path.exists(self.path + "/datasets")): shutil.rmtree(self.path + "/datasets", ignore_errors=True)
+        os.makedirs(self.path + "/datasets", exist_ok = True)
+        print ("[Folder] Created the datasets folder. ")
+        if (os.path.exists(self.path + "/trained_models")): shutil.rmtree(self.path + "/trained_models", ignore_errors=True)
+        os.makedirs(self.path + "/trained_models", exist_ok = True)
+        print ("[Folder] Created the trained_models folder. ")
+        
         print ("")
+
         print ("COMP3340_GP setup finished. ")
         
         

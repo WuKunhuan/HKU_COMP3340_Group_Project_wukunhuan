@@ -75,7 +75,7 @@ class Oxford_17_Dataset:
             val_images.extend(images_perms[i][self.train_num : self.train_num + self.val_num]) 
             for j in range(int(self.val_num * self.dataset_ratio)):
                 os.system(f"cp \"{self.path}/{images_perms[i][self.train_num + j]}\" \"{self.path}/val/class_{i+1}\"")
-            test_images.extend(images_perms[i][self.train_num + self.val_num : 80])
+            test_images.extend(images_perms[i][self.train_num + self.val_num : int(80 * self.dataset_ratio)])
             for j in range(int(self.test_num * self.dataset_ratio)):
                 os.system(f"cp \"{self.path}/{images_perms[i][self.train_num + self.val_num + j]}\" \"{self.path}/test/class_{i+1}\"")
                 

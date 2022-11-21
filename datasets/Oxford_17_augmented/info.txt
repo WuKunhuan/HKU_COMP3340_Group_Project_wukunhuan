@@ -1,1 +1,0 @@
-[Oxford_17_augmented] This is the augmented Oxford_17 dataset (10 times).

@@ -108,7 +108,7 @@ class train_model:
         time.sleep (5)
         self.train(setup, dataset)
         
-        self.print_train_result()
+        self.print_train_result(setup)
         
         self.save_trained_model(setup, dataset)
 
@@ -240,7 +240,7 @@ class train_model:
         self.print_train_val ("finish", self.train_model_epoch, None)
         
 
-    def print_train_result(self): 
+    def print_train_result(self, setup): 
         
         # plt.clf()
         # x-axis: epoch
@@ -278,6 +278,8 @@ class train_model:
         # https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
         legends=[plot1_legend, plot2_legend]
         plot1.legend(handles=legends, loc=1)
+        
+        plt.savefig(f"{setup.path}/figures/[Train] model={self.model_name}  loss_function={self.model_loss_function_name}  optimizer={self.model_optimizer_name}  learning_rate={self.model_optimizer_lr}  momentum={self.model_optimizer_momentum}  epoches={self.train_model_epoch}  batch_size={self.train_model_batch_size}.pdf", format="pdf", bbox_inches="tight")
         
     def save_trained_model(self, setup, dataset):
         
