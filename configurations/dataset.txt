@@ -1,0 +1,8 @@
+[name]Oxford_17_2
+[train_val_test]8 1 1
+[dataset_ratio]1
+
+
+# [name] is the name of the dataset
+# [train_val_test] is the training : validation : testing image ratio
+# dataset_ratio is the percentage of the database to be used, between (0, 1]
