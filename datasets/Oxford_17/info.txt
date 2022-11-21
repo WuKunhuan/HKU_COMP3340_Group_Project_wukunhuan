@@ -1,0 +1,1 @@
+[Oxford_17] This is the original Oxford_17 dataset, with train:val:test = 8:1:1 (1088:136:136) images. 
