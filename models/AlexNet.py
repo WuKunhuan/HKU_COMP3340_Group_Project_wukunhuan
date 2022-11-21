@@ -4,7 +4,7 @@ import torch.nn as nn
 
 class AlexNet(nn.Module):
     
-    def __init__(self, num_classes): 
+    def __init__(self, num_classes = 17): 
         
         super(AlexNet, self).__init__()
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=96, kernel_size=(11, 11), stride=(4, 4), padding=(2, 2))

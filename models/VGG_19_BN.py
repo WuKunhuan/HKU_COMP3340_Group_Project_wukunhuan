@@ -25,7 +25,7 @@ __all__ = [
 ]
 
 class VGG(nn.Module):
-    def __init__(self, features: nn.Module, num_classes, init_weights: bool = True, dropout: float = 0.5
+    def __init__(self, features: nn.Module, num_classes = 17, init_weights: bool = True, dropout: float = 0.5
     ) -> None:
         super().__init__()
         self.features = features
