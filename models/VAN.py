@@ -5,9 +5,16 @@ import torch.nn as nn
 import torch.nn.functional as F
 from functools import partial
 
+import os
+try: 
+    os.system ("pip install timm")
+    print ("[Package] Download timm package successfully. ")
+except Exception: print ("[Error] Failed to download the timm package. ")
+
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
+
 import math
 
 class Mlp(nn.Module):
@@ -160,7 +167,7 @@ class OverlapPatchEmbed(nn.Module):
 
 
 class VAN(nn.Module):
-    def __init__(self, num_classes, img_size=224, in_chans=3, embed_dims=[64, 128, 256, 512],
+    def __init__(self, num_classes = 17, img_size=224, in_chans=3, embed_dims=[64, 128, 256, 512],
                 mlp_ratios=[4, 4, 4, 4], drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
                  depths=[3, 4, 6, 3], num_stages=4, flag=False):
         super().__init__()

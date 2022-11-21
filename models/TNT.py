@@ -2,6 +2,12 @@
 Cite from https://github.com/lucidrains/transformer-in-transformer/blob/main/transformer_in_transformer/tnt.py
 '''
 
+import os
+try: 
+    os.system ("pip install einops")
+    print ("[Package] Download einops package successfully. ")
+except Exception: print ("[Error] Failed to download the einops package. ")
+
 
 import torch
 import torch.nn.functional as F
@@ -92,7 +98,7 @@ class TNT(nn.Module):
         pixel_dim = 24,
         patch_size = 16,
         pixel_size = 2,
-        depth,
+        depth = 2,
         num_classes = 17,
         channels = 3,
         heads = 8,
@@ -162,9 +168,9 @@ class TNT(nn.Module):
 
         pixels = self.to_pixel_tokens(x)
         patches = repeat(self.patch_tokens[:(n + 1)], 'n d -> b n d', b = b)
-
-        patches += rearrange(self.patch_pos_emb[:(n + 1)], 'n d -> () n d')
-        pixels += rearrange(self.pixel_pos_emb, 'n d -> () n d')
+        patch = self.patch_pos_emb[:(n + 1)]
+        patches = patches + rearrange(patch, 'n d -> () n d')
+        pixels = pixels + rearrange(self.pixel_pos_emb, 'n d -> () n d')
 
         for pixel_attn, pixel_ff, pixel_to_patch_residual, patch_attn, patch_ff in self.layers:
 
