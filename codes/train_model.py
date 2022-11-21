@@ -198,14 +198,13 @@ class train_model:
                 images, labels = data[0].to(self.device), data[1].to(self.device)
                 self.model_optimizer.zero_grad()
                 train_prediction = self.model(images)
-                _, train_prediction_class = torch.max(train_prediction.data, dim=1)
                 # print ("Prediction:", train_prediction_class)
                 # print ("Labels:", labels)
                 training_loss = 0
                 if (self.model_name == "Inception_V1"): 
-                    training_loss = self.model_loss_function(training_prediction[0], labels)
-                    + 0.3 * self.model_loss_function(training_prediction[1], labels)
-                    + 0.3 * self.model_loss_function(training_prediction[2], labels)    
+                    training_loss = self.model_loss_function(train_prediction[0], labels)
+                    + 0.3 * self.model_loss_function(train_prediction[1], labels)
+                    + 0.3 * self.model_loss_function(train_prediction[2], labels)    
                 else: 
                     training_loss = self.model_loss_function(train_prediction, labels)
                 training_loss.backward()
