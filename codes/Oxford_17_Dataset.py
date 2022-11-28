@@ -5,18 +5,15 @@ from IPython.display import clear_output
 
 class Oxford_17_Dataset: 
     
-    def __init__(self, setup): 
+    def __init__(self, setup, name, train, val, test, ratio): 
         
-        file_read = open(setup.path +"/configurations/dataset.txt")
         all_dataset = [f.name for f in os.scandir(f"{setup.path}/datasets" ) if f.is_dir()  and f.name != '__pycache__' and f.name != '.ipynb_checkpoints']
         
-        
-        # Read the dataset name, train_val_test and dataset_ratio
-        for line in file_read.readlines():
-            if (len(line) > 6 and line[0:6] == "[name]"): self.name = line[6:len(line)-1]
-            if (len(line) > 16 and line[0:16] == "[train_val_test]"): self.train, self.val, self.test = line[16:len(line)-1].split(' ')
-            if (len(line) > 15 and line[0:15] == "[dataset_ratio]"): self.dataset_ratio = float(line[15:len(line)-1])
-        file_read.close(); 
+        self.name = name
+        self.train = train
+        self.val = val
+        self.test = test
+        self.dataset_ratio = ratio
         
         self.train, self.val, self.test = float(self.train), float(self.val), float(self.test)
         self.path = setup.path + f"/datasets/{self.name}"
@@ -28,13 +25,15 @@ class Oxford_17_Dataset:
             print ("")
             print ("The dataset name already exists. Are you sure to overwrite the dataset? ")
             i = input("Press enter to conform or enter anything to quit. ")
-            if (i != ""): raise Exception ("User quit the dataset setup. ")
+            if (i != ""): 
+                print ("User quit the dataset setup. ")
+                return; 
         
 
         print ("\n")
         if (os.path.exists(self.path)): shutil.rmtree(self.path, ignore_errors=True)
         print ("Downloading Oxford 17 flowers source data ... ", end = "")
-        os.system("wget https://www.robots.ox.ac.uk/~vgg/data/flowers/17/17flowers.tgz")
+        os.system("wget https://www.robots.ox.ac.uk/~vgg/data/flowers/17/17flowers.tgz > /dev/null")
         os.system("tar zxvf 17flowers.tgz")
         os.system(f"mv jpg datasets/{self.name}")
         os.system("rm -rf 17flowers.tgz")
@@ -82,6 +81,13 @@ class Oxford_17_Dataset:
         for i in range(len(images)): os.system(f"rm -rf \"{self.path}/{images[i]}\"")
         os.system(f"rm -rf \"{self.path}/files.txt\"")
         os.system(f"rm -rf \"{setup.path}/datasets/jpg\"")
+        
+        f = open(f"{self.path}/dataset_description.txt", "w")
+        f.write(f"[Dataset Info]\n")
+        f.write(f"Dataset_name: {self.dataset}\n")
+        f.write(f"train_val_test: {self.train} {self.val} {self.test}\n")
+        
+        
         print ("Finished")
         print (f"\nSuccessfully set up the {self.name} dataset. ")
         

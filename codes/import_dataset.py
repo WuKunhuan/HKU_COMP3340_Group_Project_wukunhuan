@@ -6,14 +6,11 @@ from IPython.display import clear_output
 
 class import_dataset: 
     
-    def __init__(self, setup): 
+    def __init__(self, setup, dataset): 
         
         self.root = setup.path
-        self.dataset = None
-        file_read = open(f"{self.root}/configurations/import_dataset.txt")
-        for line in file_read.readlines():
-            if (len(line) > 9 and line[0:9] == "[dataset]"): self.dataset = line[9:len(line)-1]
-        file_read.close(); 
+        self.dataset = dataset
+
         all_dataset = [f.name for f in os.scandir(f"{self.root}/datasets") if f.is_dir() and f.name != "__pycache__" and f.name != ".ipynb_checkpoints"]
         all_dataset = sorted(all_dataset)
         print (f"Current datasets: {all_dataset}")
