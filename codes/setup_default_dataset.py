@@ -12,7 +12,6 @@ class setup_default_dataset:
         
         else: 
             
-            os.makedirs(setup.path + f"/datasets/Oxford_17", exist_ok=True)
             print ("Creating the Oxford_17 dataset. ", end = "")
 
             # Setup the Oxford_17 dataset
