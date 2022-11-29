@@ -510,20 +510,26 @@ class model:
                     if (len(line) > 20 and line[0:20] == "Val accuracy 5 log: "): model.val_accuracy_5_log= eval(line[20:len(line) - 1])
                     if (len(line) > 16 and line[0:16] == "Train time (s): "): model.train_time = float(eval(line[16:len(line) - 1]))
                     if (len(line) > 20 and line[0:20] == "Time per epoch (s): "): model.train_time_epoch = float(eval(line[20:len(line) - 1]))
-                    model.train_prediction_class = torch.load(f"{model.load_model_path}/train_predictions.pt")
-                    model.train_prediction_5_class = torch.load(f"{model.load_model_path}/train_predictions_5.pt")
-                    model.train_label_class = torch.load(f"{model.load_model_path}/train_labels.pt")
-                    model.val_prediction_class = torch.load(f"{model.load_model_path}/val_predictions.pt")
-                    model.val_prediction_5_class = torch.load(f"{model.load_model_path}/val_predictions_5.pt")
-                    model.val_label_class = torch.load(f"{model.load_model_path}/val_labels.pt")
+
+                    # model.train_prediction_class = torch.load(f"{model.load_model_path}/train_predictions.pt")
+                    # model.train_prediction_5_class = torch.load(f"{model.load_model_path}/train_predictions_5.pt")
+                    # model.train_label_class = torch.load(f"{model.load_model_path}/train_labels.pt")
+                    # model.val_prediction_class = torch.load(f"{model.load_model_path}/val_predictions.pt")
+                    # model.val_prediction_5_class = torch.load(f"{model.load_model_path}/val_predictions_5.pt")
+                    # model.val_label_class = torch.load(f"{model.load_model_path}/val_labels.pt")
+
                 file_read.close()
                 try: 
                     exec(f"import models.{model.model_name} as {model.model_name}")
+                    
                     model.model = eval(f"{model.model_name}.{model.model_name} ()")
-                    model.model.load_state_dict(torch.load(f"{model.load_model_path}/model_state_dict.pt"))
-                    model.model.eval()
+                    
+                    # model.model.load_state_dict(torch.load(f"{model.load_model_path}/model_state_dict.pt"))
+                    # model.model.eval()
                     # os.system("clear")
+
                     print (f"Load model {trained_model_name} ({model.model_name}) successfully.")
+                    
                     return model; 
                     
                     
