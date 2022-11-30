@@ -1,5 +1,5 @@
 [Model Info]
-Model_name: SwinTransformer_1e4_16
+Model_name: SwinTransformer_lr1e-4_b16_e100
 Model: SwinTransformer
 
 [Model Training Configurations]
