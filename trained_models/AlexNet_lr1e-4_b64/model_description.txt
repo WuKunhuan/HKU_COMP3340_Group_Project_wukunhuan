@@ -1,5 +1,5 @@
 [Model Info]
-Model_name: AlexNet_1e4_64
+Model_name: AlexNet_lr1e-4_b64_e100
 Model: AlexNet
 
 [Model Training Configurations]
