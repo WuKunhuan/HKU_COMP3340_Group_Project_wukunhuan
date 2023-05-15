@@ -8,11 +8,11 @@ class setup_default_dataset:
         
         if (os.path.exists(setup.path + f"/datasets/Oxford_17")): 
         
-            pass
+            print ("The default Oxford_17 dataset ALREADY EXISTS. ")
         
         else: 
             
-            print ("Creating the Oxford_17 dataset. ", end = "")
+            print ("Creating the default Oxford_17 dataset ... ", end = "")
 
             # Setup the Oxford_17 dataset
             train, val, test = 8, 1, 1

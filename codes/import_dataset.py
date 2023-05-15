@@ -14,7 +14,7 @@ class import_dataset:
         all_dataset = [f.name for f in os.scandir(f"{self.root}/datasets") if f.is_dir() and f.name != "__pycache__" and f.name != ".ipynb_checkpoints"]
         all_dataset = sorted(all_dataset)
         print (f"Current datasets: {all_dataset}")
-        print (f"Import dataset {self.dataset} ... ", end="")
+        print (f"Importing dataset {self.dataset} ... ", end="")
         if (not self.dataset in all_dataset): 
             raise Exception (f"[Error] {self.dataset} not found in the datasets folder. ")
         self.path = f"{self.root}/datasets/{self.dataset}"

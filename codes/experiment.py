@@ -15,7 +15,7 @@ import pandas as pd
 # https://stackoverflow.com/questions/57043260/how-change-the-color-of-boxes-in-confusion-matrix-using-sklearn
 
 # Compare different models
-color_schema_1 = [(40/255,86/255,108/255), (182/255,121/255,144/255), (118/255,181/255,106/255), (187/255,80/255,56/255), (106/255,79/255,121/255), (143/255,198/255,189/255)]
+color_schema = [(40/255,86/255,108/255), (182/255,121/255,144/255), (118/255,181/255,106/255), (187/255,80/255,56/255), (106/255,79/255,121/255), (143/255,198/255,189/255)]
 
 # Compare different learning rate & batch sizes
 color_schema_r = [(0.5, 0, 0), (0.65, 0.3, 0.3), (0.75, 0.5, 0.5), (0.82, 0.65, 0.65), (0.87, 0.75, 0.75), (0.91, 0.82, 0.82)]
@@ -68,7 +68,8 @@ class Experiment:
                 warning = True
             self.save_model_name.append(self.models[i].save_model_name)
             
-            self.train_loss_log.append(self.models[i].train_loss_log)
+            loss = [round(log, 3) for log in self.models[i].train_loss_log]
+            self.train_loss_log.append(loss)
             
             if (i == 0): 
                 self.dataset = self.models[i].dataset
@@ -114,24 +115,33 @@ class Experiment:
         print (f"learning rate: {self.model_optimizer_lr}")
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
-        print (f"train loss: {self.train_loss_log}")
+
+        print (f"train loss: ")
+        loss = [str(i) for i in self.train_loss_log]
+        print ('\n'.join(loss))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Train Losses for different Models")
+        title = self.save_model_name[0]; 
+        for i in range (1, len(self.save_model_name), 1): 
+          if (i == len(self.save_model_name) - 1): title += " and "
+          else: title += ", "
+          title += self.save_model_name[i]
+
+        plt.title (f"Train Losses for {title} models")
         plt.yticks([]) 
         legends = []
         
         max_train_loss = 0
         for i in self.train_loss_log: 
             if (max(i) > max_train_loss): max_train_loss = max(i)
-        
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, max_train_loss*1.2)")
             exec(f"plot{3*i}.set_ylabel (\"Train Loss\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -157,7 +167,6 @@ class Experiment:
         
         warning = False
 
-        
         print ("[Experiment] Find the relationship between Models and Validation Accuracies (top 1 & top 5). \n")
         
         for i in range (len(self.models)): 
@@ -167,7 +176,8 @@ class Experiment:
                 warning = True
             self.save_model_name.append(self.models[i].save_model_name)
             
-            self.train_accuracy_log.append(self.models[i].train_accuracy_log)
+            accuracy = [round(log, 3) for log in self.models[i].train_accuracy_log]
+            self.train_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.dataset = self.models[i].dataset
@@ -213,24 +223,33 @@ class Experiment:
         print (f"learning rate: {self.model_optimizer_lr}")
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
-        print (f"train accuracy (top 1): {self.train_accuracy_log}")
+
+        print (f"train accuracy: ")
+        accuracy = [str(i) for i in self.train_accuracy_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Train Accuracies (top 1) for different Models")
+        title = self.save_model_name[0]; 
+        for i in range (1, len(self.save_model_name), 1): 
+          if (i == len(self.save_model_name) - 1): title += " and "
+          else: title += ", "
+          title += self.save_model_name[i]
+
+        plt.title (f"Train Accuracies (top 1) for {title} models")
         plt.yticks([]) 
         legends = []
         
         max_train_loss = 0
         for i in self.train_loss_log: 
             if (max(i) > max_train_loss): max_train_loss = max(i)
-        
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
 
             exec(f"plot{3*i+1} = plot.twinx()")
             exec(f"plot{3*i+1}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i+1}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i+1}.set_ylim (0, 1)")
             exec(f"plot{3*i+1}.set_ylabel (\"Train Accuracy (top 1)\")")
             exec(f"plot{3*i+1}_x = list(range(1, self.train_model_epoch + 1))")
@@ -265,7 +284,8 @@ class Experiment:
                 warning = True
             self.save_model_name.append(self.models[i].save_model_name)
             
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.dataset = self.models[i].dataset
@@ -311,24 +331,33 @@ class Experiment:
         print (f"learning rate: {self.model_optimizer_lr}")
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
-        print (f"validation accuracy (top 1): {self.val_accuracy_log}")
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Validation Accuracies (top 1) for different Models")
+        title = self.save_model_name[0]; 
+        for i in range (1, len(self.save_model_name), 1): 
+          if (i == len(self.save_model_name) - 1): title += " and "
+          else: title += ", "
+          title += self.save_model_name[i]
+
+        plt.title (f"Validation Accuracies (top 1) for {title} models")
         plt.yticks([]) 
         legends = []
         
         max_train_loss = 0
         for i in self.train_loss_log: 
             if (max(i) > max_train_loss): max_train_loss = max(i)
-        
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
 
             exec(f"plot{3*i+1} = plot.twinx()")
             exec(f"plot{3*i+1}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i+1}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i+1}.set_ylim (0, 1)")
             exec(f"plot{3*i+1}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i+1}_x = list(range(1, self.train_model_epoch + 1))")
@@ -365,8 +394,11 @@ class Experiment:
                 warning = True
             self.save_model_name.append(self.models[i].save_model_name)
             
-            self.train_loss_log.append(self.models[i].train_loss_log)
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
+            loss = [round(log, 3) for log in self.models[i].train_loss_log]
+            self.train_loss_log.append(loss)
+
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.dataset = self.models[i].dataset
@@ -412,25 +444,37 @@ class Experiment:
         print (f"learning rate: {self.model_optimizer_lr}")
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
-        print (f"train loss: {self.train_loss_log}")
-        print (f"validation accuracy (top 1): {self.val_accuracy_log}")
+
+        print (f"train loss: ")
+        loss = [str(i) for i in self.train_loss_log]
+        print ('\n'.join(loss))
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
-        
-        plt.title (f"Train Losses and Validation Accuracies (top 1) for different models")
+
+        title = self.save_model_name[0]; 
+        for i in range (1, len(self.save_model_name), 1): 
+          if (i == len(self.save_model_name) - 1): title += " and "
+          else: title += ", "
+          title += self.save_model_name[i]
+
+        plt.title (f"Train Losses and Validation Accuracies (top 1) for {title} models")
         plt.yticks([]) 
         legends = []
         
         max_train_loss = 0
         for i in self.train_loss_log: 
             if (max(i) > max_train_loss): max_train_loss = max(i)
-        
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, max_train_loss*1.2)")
             exec(f"plot{3*i}.set_ylabel (\"Train Loss\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -441,7 +485,6 @@ class Experiment:
             exec(f"plot{3*i+1} = plot.twinx()")
             exec(f"plot{3*i+1}.spines['right'].set_position(('outward', 60))")
             exec(f"plot{3*i+1}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i+1}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i+1}.set_ylim (0, 1)")
             exec(f"plot{3*i+1}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i+1}_x = list(range(1, self.train_model_epoch + 1))")
@@ -479,9 +522,14 @@ class Experiment:
                 warning = True
             self.save_model_name.append(self.models[i].save_model_name)
             
-            self.train_loss_log.append(self.models[i].train_loss_log)
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
-            self.val_accuracy_5_log.append(self.models[i].val_accuracy_5_log)
+            loss = [round(log, 3) for log in self.models[i].train_loss_log]
+            self.train_loss_log.append(loss)
+
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
+
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_5_log]
+            self.val_accuracy_5_log.append(accuracy)
             
             if (i == 0): 
                 self.dataset = self.models[i].dataset
@@ -527,26 +575,42 @@ class Experiment:
         print (f"learning rate: {self.model_optimizer_lr}")
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
-        # print (f"train loss: {self.train_loss_log}")
-        # print (f"validation accuracy (top 1): {self.val_accuracy_log}")
-        # print (f"validation accuracy (top 5): {self.val_accuracy_5_log}")
+
+
+        print (f"train loss: ")
+        loss = [str(i) for i in self.train_loss_log]
+        print ('\n'.join(loss))
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
+        
+        print (f"validation accuracy (top 5): ")
+        accuracy = [str(i) for i in self.val_accuracy_5_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
-        
-        plt.title (f"Train Losses and Validation Accuracies (top 1 & top 5) for different models")
+
+        title = self.save_model_name[0]; 
+        for i in range (1, len(self.save_model_name), 1): 
+          if (i == len(self.save_model_name) - 1): title += " and "
+          else: title += ", "
+          title += self.save_model_name[i]
+
+        plt.title (f"Train Losses and Validation Accuracies (top 1 & top 5) for {title} models")
         plt.yticks([]) 
         legends = []
         
         max_train_loss = 0
         for i in self.train_loss_log: 
             if (max(i) > max_train_loss): max_train_loss = max(i)
-        
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")") 
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, max_train_loss*1.2)")
             exec(f"plot{3*i}.set_ylabel (\"Train Loss\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -557,7 +621,6 @@ class Experiment:
             exec(f"plot{3*i+1} = plot.twinx()")
             exec(f"plot{3*i+1}.spines['right'].set_position(('outward', 60))")
             exec(f"plot{3*i+1}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i+1}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i+1}.set_ylim (0, 1)")
             exec(f"plot{3*i+1}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i+1}_x = list(range(1, self.train_model_epoch + 1))")
@@ -568,7 +631,6 @@ class Experiment:
             exec(f"plot{3*i+2} = plot.twinx()")
             exec(f"plot{3*i+2}.spines['right'].set_position(('outward', 120))")
             exec(f"plot{3*i+2}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i+2}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i+2}.set_ylim (0, 1)")
             exec(f"plot{3*i+2}.set_ylabel (\"Validation Accuracy (top 5)\")")
             exec(f"plot{3*i+2}_x = list(range(1, self.train_model_epoch + 1))")
@@ -606,7 +668,8 @@ class Experiment:
                 warning = True
             self.model_optimizer_lr.append(str(self.models[i].model_optimizer_lr))
             
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -653,19 +716,22 @@ class Experiment:
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
         print (f"learning rate: {self.model_optimizer_lr}")
-        print (f"validation accuracy (top 1): {self.val_accuracy_log}")
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Learning Rates and Validation Accuracies (top 1) for the same model")
+        plt.title (f"Learning Rates and Validation Accuracies (top 1) for {self.model_name}")
         plt.yticks([]) 
         legends = []
         
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
+
         for i in range (len(self.models)):
-            
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -702,7 +768,8 @@ class Experiment:
                 warning = True
             self.model_optimizer_lr.append(str(self.models[i].model_optimizer_lr))
             
-            self.val_accuracy_5_log.append(self.models[i].val_accuracy_5_log)
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_5_log]
+            self.val_accuracy_5_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -749,19 +816,23 @@ class Experiment:
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
         print (f"learning rate: {self.model_optimizer_lr}")
-        print (f"validation accuracy (top 5): {self.val_accuracy_5_log}")
+
+        print (f"validation accuracy (top 5): ")
+        accuracy = [str(i) for i in self.val_accuracy_5_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Learning Rates and Validation Accuracies (top 5) for the same model")
+        plt.title (f"Learning Rates and Validation Accuracies (top 5) for {self.model_name}")
         plt.yticks([]) 
         legends = []
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 5)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -797,7 +868,8 @@ class Experiment:
                 warning = True
             self.train_model_batch_size.append(str(self.models[i].train_model_batch_size))
             
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -844,19 +916,23 @@ class Experiment:
         print (f"learning rate: {self.train_model_batch_size}")
         print (f"epoch: {self.train_model_epoch}\n")
         print (f"batch size: {self.train_model_batch_size}")
-        print (f"validation accuracy (top 1): {self.val_accuracy_log}")
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Batch Sizes and Validation Accuracies (top 1) for the same model")
+        plt.title (f"Batch Sizes and Validation Accuracies (top 1) for {self.model_name}")
         plt.yticks([]) 
         legends = []
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -894,7 +970,9 @@ class Experiment:
                 print (f"Warning: {self.models[i].save_model_name}'s batch size ({self.models[i].train_model_batch_size}) already exists! ")
                 warning = True
             self.train_model_batch_size.append(str(self.models[i].train_model_batch_size))
-            self.val_accuracy_5_log.append(self.models[i].val_accuracy_5_log)
+
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_5_log]
+            self.val_accuracy_5_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -941,19 +1019,23 @@ class Experiment:
         print (f"learning rate: {self.train_model_batch_size}")
         print (f"epoch: {self.train_model_epoch}\n")
         print (f"batch size: {self.train_model_batch_size}")
-        print (f"validation accuracy (top 5): {self.val_accuracy_5_log}")
+
+        print (f"validation accuracy (top 5): ")
+        accuracy = [str(i) for i in self.val_accuracy_5_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Batch Sizes and Validation Accuracies (top 5) for the same model")
+        plt.title (f"Batch Sizes and Validation Accuracies (top 5) for {self.model_name}")
         plt.yticks([]) 
         legends = []
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 5)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -995,7 +1077,8 @@ class Experiment:
                 warning = True
             self.dataset.append(str(self.models[i].dataset))
             
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -1042,20 +1125,24 @@ class Experiment:
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
         print (f"dataset: {self.dataset}")
-        print (f"validation accuracy (top 1): {self.val_accuracy_log}")
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
         
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Datasets and Validation Accuracies (top 1) for the same model")
+        plt.title (f"Datasets and Validation Accuracies (top 1) for {self.model_name}")
         plt.yticks([]) 
         legends = []
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -1095,7 +1182,8 @@ class Experiment:
                 warning = True
             self.dataset.append(str(self.models[i].dataset))
             
-            self.val_accuracy_5_log.append(self.models[i].val_accuracy_5_log)
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_5_log]
+            self.val_accuracy_5_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -1142,19 +1230,23 @@ class Experiment:
         print (f"epoch: {self.train_model_epoch}")
         print (f"batch size: {self.train_model_batch_size}\n")
         print (f"dataset: {self.dataset}")
-        print (f"validation accuracy (top 5): {self.val_accuracy_5_log}")
+
+        print (f"validation accuracy (top 5): ")
+        accuracy = [str(i) for i in self.val_accuracy_5_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Datasets and Validation Accuracies (top 5) for the same model")
+        plt.title (f"Datasets and Validation Accuracies (top 5) for {self.model_name}")
         plt.yticks([]) 
         legends = []
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 5)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -1188,7 +1280,9 @@ class Experiment:
             
             self.model_optimizer_name.append(str(self.models[i].model_optimizer_name))
             self.model_optimizer_momentum.append(str(self.models[i].model_optimizer_momentum))
-            self.val_accuracy_log.append(self.models[i].val_accuracy_log)
+
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_log]
+            self.val_accuracy_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -1231,19 +1325,23 @@ class Experiment:
         print (f"batch size: {self.train_model_batch_size}\n")
         print (f"optimizer: {self.model_optimizer_name}")
         print (f"momentum = {self.model_optimizer_momentum}")
-        print (f"validation accuracy (top 1): {self.val_accuracy_log}")
+
+        print (f"validation accuracy (top 1): ")
+        accuracy = [str(i) for i in self.val_accuracy_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Optimizers and Validation Accuracies (top 1) for the same model")
+        plt.title (f"Optimizers and Validation Accuracies (top 1) for {self.model_name}")
         plt.yticks([]) 
         legends = []
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
         
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -1281,7 +1379,9 @@ class Experiment:
             
             self.model_optimizer_name.append(str(self.models[i].model_optimizer_name))
             self.model_optimizer_momentum.append(str(self.models[i].model_optimizer_momentum))
-            self.val_accuracy_5_log.append(self.models[i].val_accuracy_5_log)
+
+            accuracy = [round(log, 3) for log in self.models[i].val_accuracy_5_log]
+            self.val_accuracy_5_log.append(accuracy)
             
             if (i == 0): 
                 self.model_name = self.models[i].model_name
@@ -1324,19 +1424,23 @@ class Experiment:
         print (f"batch size: {self.train_model_batch_size}\n")
         print (f"optimizer: {self.model_optimizer_name}")
         print (f"momentum = {self.model_optimizer_momentum}")
-        print (f"validation accuracy (top 5): {self.val_accuracy_5_log}")
+
+        print (f"validation accuracy (top 5): ")
+        accuracy = [str(i) for i in self.val_accuracy_5_log]
+        print ('\n'.join(accuracy))
             
         fig, plot = plt.subplots (figsize = (10, 8))
         
-        plt.title (f"Optimizers and Validation Accuracies (top 5) for the same model")
+        plt.title (f"Optimizers and Validation Accuracies (top 5) for {self.model_name}")
         plt.yticks([]) 
         legends = []
-        
+
+        exec(f"plot.set_xlabel (\"Epoch (1 - {self.train_model_epoch})\")")
+
         for i in range (len(self.models)):
             
             exec(f"plot{3*i} = plot.twinx()")
             exec(f"plot{3*i}.set_xlim (0, {self.train_model_epoch} + 1)")
-            exec(f"plot{3*i}.set_xlabel (\"Epoch\")")
             exec(f"plot{3*i}.set_ylim (0, 1)")
             exec(f"plot{3*i}.set_ylabel (\"Validation Accuracy (top 5)\")")
             exec(f"plot{3*i}_x = list(range(1, self.train_model_epoch + 1))")
@@ -1424,7 +1528,7 @@ class Experiment:
         
         
         fig, plot = plt.subplots (figsize = (10, 8))
-        plt.title (f"Validation Accuracy for {self.models[0].model_name} models (different lr)")
+        plt.title (f"Validation Accuracies for {self.models[0].model_name} models (different lr)")
         plt.yticks([]) 
         legends = []
         
@@ -1435,7 +1539,8 @@ class Experiment:
             plot_x[i] = str(plot_x[i])
         exec(f"plt.xticks(range(0, len(plot_x)), plot_x, rotation='vertical')")
         exec(f"plt.margins(0.15)") 
-        
+
+        exec(f"plot.set_xlabel (\"Learning Rate\")")
         
         for a in range (len(self.model_name)): 
             
@@ -1448,7 +1553,6 @@ class Experiment:
             print (dictionary)
             
             exec(f"plot{a} = plot.twinx()")
-            exec(f"plot{a}.set_xlabel (\"Learning Rate\")")
             exec(f"plot{a}.set_ylim (0, 1.2)")
             exec(f"plot{a}.set_ylabel (\"Validation Accuracy (top 1)\")")
             exec(f"plot{a}_x = []")
@@ -1534,7 +1638,7 @@ class Experiment:
         
         
         fig, plot = plt.subplots (figsize = (10, 8))
-        plt.title (f"Train Time (per epoch) for {self.models[0].model_name} models (different lr)")
+        plt.title (f"Time (per epoch) for {self.models[0].model_name} models (different lr)")
         plt.yticks([]) 
         legends = []
         
@@ -1546,7 +1650,8 @@ class Experiment:
             plot_x[i] = str(plot_x[i])
         exec(f"plt.xticks(range(0, len(plot_x)), plot_x, rotation='vertical')")
         exec(f"plt.margins(0.15)") 
-        
+
+        exec(f"plot.set_xlabel (\"Learning Rate\")")
         
         for a in range (len(self.model_name)): 
             
@@ -1559,7 +1664,6 @@ class Experiment:
             print (dictionary)
             
             exec(f"plot{a} = plot.twinx()")
-            exec(f"plot{a}.set_xlabel (\"Learning Rate\")")
             exec(f"plot{a}.set_ylim (0, {plot_y * 1.5})")
             exec(f"plot{a}.set_ylabel (\"Training Time\")")
             exec(f"plot{a}_x = []")
@@ -1585,7 +1689,7 @@ class Experiment:
         self.train_model_batch_size = []
         self.val_accuracy_log = []
         
-        print ("[Experiment] Find the relationship between Model & Learning Rates and Val Accuracy. \n")
+        print ("[Experiment] Find the relationship between Model & Batch Sizes and Val Accuracy. \n")
         warning = False
         
         for i in range (len(self.models)): 

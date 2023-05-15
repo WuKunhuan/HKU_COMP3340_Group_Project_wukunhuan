@@ -41,7 +41,7 @@ class DIY_Dataset:
             os.makedirs(self.path + f"/test/{class_name}", exist_ok=True)
             
         print ("Finished")
-        print (f"\nSuccessfully set up the {self.name} DIY dataset. You still need to put your images under the train, val and test directories. ")
+        print (f"\nSuccessfully set up the {self.name} DIY dataset. \nYou still need to put your images under the train, val and test directories. ")
         
 
 

@@ -1,5 +1,5 @@
 
-import os
+import os, time
 from IPython.display import clear_output
 import math, shutil, time
 
@@ -121,6 +121,8 @@ class model:
             except ValueError: raise Exception (f"[Error] Optimizer momentum should be a positive float number between [0, 1). ")
         else: self.model_optimizer_momentum = None
         import torch.optim as optim
+
+        # Adam optimizer does not have "momentum" option
         if (self.model_optimizer_name == "SGD"): 
             self.model_optimizer = eval(f"optim.{self.model_optimizer_name}(self.model.parameters(), lr=self.model_optimizer_lr, momentum={self.model_optimizer_momentum})")
         else: self.model_optimizer = eval(f"optim.{self.model_optimizer_name}(self.model.parameters(), lr=self.model_optimizer_lr)")
@@ -140,12 +142,14 @@ class model:
         
         clear_output(wait=True)
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        if (self.device == "cpu"): print("[Device] Warning: Train the model with CPU because cuda is not available")
-        else: print("[Device] Train the model with GPU")
         self.model.to(self.device)
+        if (self.device == "cpu"): 
+          print("[Device] Warning: Train the model with CPU because cuda is not available")
+        else: 
+          print("[Device] Train the model with GPU")
+        time.sleep (1)
 
         clear_output(wait=True)
-        print ("All model training settings are completed. \n")
         print (f"Model name: {self.save_model_name}")
         print (f"Model: {self.model_name} (output classes = 17)")
         print (f"Loss function: {self.model_loss_function_name}")
@@ -153,10 +157,12 @@ class model:
         print ("\nFor the model training: ")
         print (f"Epoches: {self.train_model_epoch}")
         print (f"Batch size: {self.train_model_batch_size}")
-        if torch.cuda.is_available(): print (f"Device: GPU")
-        else: print (f"Device: CPU")
+        if (self.device == "cpu"): 
+          print (f"\033[31mDevice: CPU\033[0m")
+        else: 
+          print (f"\033[32mDevice: GPU\033[0m")
+        time.sleep (2)
         print ("\nThe training will start in 2 seconds ...")
-        import time
         time.sleep (2)
 
         self.train_model (setup, dataset)
@@ -219,9 +225,9 @@ class model:
                 print (f" {batch} out of {len(self.val_dataloader)}")
         
         if (epoch != 0): 
-            print (f"Latest train loss: {self.train_loss_log[epoch - 1]}")
-            print (f"Latest val accuracy: {self.val_accuracy_log[epoch - 1]}")
-            print (f"Latest val_5 accuracy: {self.val_accuracy_5_log[epoch - 1]}")
+            print (f"Latest train loss: {round(self.train_loss_log[epoch - 1], 3)}")
+            print (f"Latest val accuracy: {round(self.val_accuracy_log[epoch - 1], 3)}")
+            print (f"Latest val_5 accuracy: {round(self.val_accuracy_5_log[epoch - 1], 3)}")
         
     
     def train_model (self, setup, dataset): 
@@ -243,9 +249,9 @@ class model:
         
         clear_output(wait=True)
         print (f"Start training the model {self.save_model_name}. ")
-        print (f"   -> After training, the trained model will appear in the trained_models folder. ")
-        print (f"   -> There will be another .zip file of the trained model. You may DOWNLOAD and save that. ")
-        print (f"   -> Upload .zip models downloaded to the trained_model folder, and unzip them later. ")
+        print (f"After training, the trained model will appear in the trained_models folder. ")
+        print (f"There will be another .zip file of the trained model. You may DOWNLOAD and save that. ")
+        print (f"Upload .zip models downloaded to the trained_model folder, and unzip them later. ")
         
         import time
         time.sleep (3)
@@ -258,7 +264,6 @@ class model:
         self.start_time = time.perf_counter()
         
         for epoch in range (self.train_model_epoch): 
-            
            
             # Training
             self.model.train()
@@ -274,7 +279,10 @@ class model:
             model_labels = []
             
             training_loss_total = 0
+
             for batch, data in enumerate(self.train_dataloader, start = 0): 
+
+                self.print_train_val ("train", epoch, batch, setup)
                 images, labels = data[0].to(self.device), data[1].to(self.device)
                 self.model_optimizer.zero_grad()
                 train_prediction = self.model(images)
@@ -307,8 +315,6 @@ class model:
                 self.model_optimizer.step()
                 training_loss_total += training_loss.item()
                 
-                self.print_train_val ("train", epoch, batch, setup)
-                
             self.train_loss_log.append(training_loss_total)
             
             accuracy = correct_predictions / total_predictions
@@ -340,7 +346,10 @@ class model:
             
             model_labels = []
             with torch.no_grad():
+
                 for batch, data in enumerate(self.val_dataloader, start = 0): 
+
+                    self.print_train_val ("val", epoch, batch, setup)
                     images, labels = data[0].to(self.device), data[1].to(self.device)
                     val_prediction = self.model(images)
                     
@@ -363,7 +372,7 @@ class model:
                     # print ("Labels:", labels)
                     
                     total_predictions += labels.size(0)
-                    self.print_train_val ("val", epoch, batch, setup)
+                    
                     
             accuracy = correct_predictions / total_predictions
             accuracy_5 = correct_predictions_5 / total_predictions
